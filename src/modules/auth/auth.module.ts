@@ -9,7 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/entity/user.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 
-import {UserRepository} from "../user/repository/user.repository";
+import { UserRepository } from '../user/repository/user.repository';
 
 @Module({
     imports: [
@@ -21,7 +21,7 @@ import {UserRepository} from "../user/repository/user.repository";
             signOptions: { expiresIn: jwtConstants.accessTokenExpiry },
         }),
     ],
-    providers: [AuthService, JwtStrategy,UserRepository],
+    providers: [AuthService, JwtStrategy, UserRepository],
     exports: [AuthService],
     controllers: [AuthController],
 })

@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import {Column} from "typeorm";
-import {Expose} from "class-transformer";
 
 export class SignUpDto {
     @ApiProperty({
@@ -25,5 +23,4 @@ export class SignUpDto {
     @IsString()
     @IsNotEmpty()
     phone: string;
-
 }
