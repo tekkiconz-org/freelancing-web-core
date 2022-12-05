@@ -9,6 +9,7 @@ import { SignUpDto } from './dto/signUp.dto';
 import { GetAccessTokenForm } from './dto/getAccessToken.dto';
 import { ResponseAuthDto } from './dto/responseAuth.dto';
 import { User } from '../user/entity/user.entity';
+import {LocalAuthGuard} from "./guards/local-auth.guard";
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -19,7 +20,7 @@ export class AuthController {
     @ApiBody({
         type: LoginUserDto,
     })
-    @UseGuards()
+    @UseGuards(LocalAuthGuard)
     async login(@Req() req: Request): Promise<ResponseAuthDto> {
         return this.authService.login(req);
     }

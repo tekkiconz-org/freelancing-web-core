@@ -34,15 +34,7 @@ export class AuthService {
 
     async login(req: Request): Promise<ResponseAuthDto> {
         // console.log(req.body);
-        const user :Partial<User> = req.user;
-        const exist = await this.userRepository.findOneBy({ email: user.email });
-        if (!exist) {
-            throw new BadRequestException({ message: 'User is not exist' });
-        }
-        const comparePassword = await bcrypt.compare(req.body.password, exist.password);
-        if (!comparePassword) {
-            throw new BadRequestException({ message: 'Wrong password' });
-        }
+        const user : Partial<User> = req.user;
         const payload = { email: user.email,  id: user.id };
         return {
             access_token: this.jwtService.sign(payload),

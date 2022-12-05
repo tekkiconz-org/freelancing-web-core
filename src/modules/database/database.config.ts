@@ -18,7 +18,7 @@ export const defaultConfig: TypeOrmModuleOptions = {
     database: process.env.MYSQL_DATABASE,
     // autoLoadEntities: true,
     entities: [User, Category, ExtraType, Gig, GigExtra, GigOrder, GigPlan, GigRating, Transaction],
-    synchronize: true,
+    synchronize: false,
     logging: true,
     // dropSchema: false,
 };
