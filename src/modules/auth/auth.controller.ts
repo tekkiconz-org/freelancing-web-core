@@ -1,13 +1,14 @@
-import {Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { UsersService } from '../user/users.service';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { Request } from 'express';
 import { JWTAuthGuard } from './guards/jwt-auth.guard';
-import {SignUpDto} from "./dto/signUp.dto";
-import {GetAccessTokenForm} from "./dto/getAccessToken.dto";
-import {ResponseAuthDto} from "./dto/responseAuth.dto";
+import { SignUpDto } from './dto/signUp.dto';
+import { GetAccessTokenForm } from './dto/getAccessToken.dto';
+import { ResponseAuthDto } from './dto/responseAuth.dto';
+import { User } from '../user/entity/user.entity';
 
 @Controller('auth')
 @ApiTags('Auth')
@@ -19,10 +20,9 @@ export class AuthController {
         type: LoginUserDto,
     })
     @UseGuards(JWTAuthGuard)
-    async login(@Req() req: Request): Promise<any> {
+    async login(@Req() req: Request): Promise<User> {
         return this.authService.login(req);
     }
-
 
     @Post('sign-up')
     @HttpCode(HttpStatus.CREATED)

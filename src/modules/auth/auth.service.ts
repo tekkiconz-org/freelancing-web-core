@@ -1,16 +1,15 @@
-import {BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException} from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '../user/entity/user.entity';
 import { UsersService } from '../user/users.service';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
-import {SignUpDto} from "./dto/signUp.dto";
-import {ResponseAuthDto} from "./dto/responseAuth.dto";
-import {JwtService} from "@nestjs/jwt";
-import {UserRepository} from "../user/repository/user.repository";
+import { SignUpDto } from './dto/signUp.dto';
+import { ResponseAuthDto } from './dto/responseAuth.dto';
+import { JwtService } from '@nestjs/jwt';
+import { UserRepository } from '../user/repository/user.repository';
 
 @Injectable()
 export class AuthService {
-
     private refreshTokenConfig = {
         expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
         secret: process.env.REFRESH_TOKEN_SECRET,
@@ -33,7 +32,7 @@ export class AuthService {
         };
     }
 
-    async login(req: Request): Promise<any> {
+    async login(req: Request): Promise<User> {
         // console.log(req.body);
         const admin = await this.userRepository.findOneBy({ email: req.body.username });
         if (!admin) {
@@ -58,7 +57,7 @@ export class AuthService {
         user.email = email;
         user.password = password;
         user.username = username;
-        await this.userRepository.save(user)
+        await this.userRepository.save(user);
     }
 
     async getAccessToken(refreshToken: string): Promise<Partial<ResponseAuthDto>> {
