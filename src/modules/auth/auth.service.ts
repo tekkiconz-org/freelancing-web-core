@@ -24,7 +24,7 @@ export class AuthService {
         const user = await this.userRepository.findOneBy({ email: email });
         const comparePassword = await bcrypt.compare(password, user.password);
         if (!comparePassword) {
-            throw new HttpException({ message: 'UnAuthorized' }, HttpStatus.FORBIDDEN);
+            throw new BadRequestException({ message: 'UnAuthorized' });
         }
         return {
             id: user.id,
@@ -32,18 +32,22 @@ export class AuthService {
         };
     }
 
-    async login(req: Request): Promise<User> {
+    async login(req: Request): Promise<ResponseAuthDto> {
         // console.log(req.body);
-        const admin = await this.userRepository.findOneBy({ email: req.body.username });
-        if (!admin) {
-            throw new HttpException({ message: 'Admin is not exist' }, HttpStatus.BAD_REQUEST);
+        const user :Partial<User> = req.user;
+        const exist = await this.userRepository.findOneBy({ email: user.email });
+        if (!exist) {
+            throw new BadRequestException({ message: 'User is not exist' });
         }
-        const comparePassword = await bcrypt.compare(req.body.password, admin.password);
+        const comparePassword = await bcrypt.compare(req.body.password, exist.password);
         if (!comparePassword) {
-            throw new HttpException({ message: 'Wrong password' }, HttpStatus.FORBIDDEN);
+            throw new BadRequestException({ message: 'Wrong password' });
         }
-        // const payload = { email: user.email, sub: user.userId };
-        return admin;
+        const payload = { email: user.email,  id: user.id };
+        return {
+            access_token: this.jwtService.sign(payload),
+            refresh_token: this.jwtService.sign(payload, this.refreshTokenConfig),
+        };
     }
 
     async signUp(signUpDto: SignUpDto): Promise<void> {

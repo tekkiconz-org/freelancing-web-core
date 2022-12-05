@@ -19,8 +19,8 @@ export class AuthController {
     @ApiBody({
         type: LoginUserDto,
     })
-    @UseGuards(JWTAuthGuard)
-    async login(@Req() req: Request): Promise<User> {
+    @UseGuards()
+    async login(@Req() req: Request): Promise<ResponseAuthDto> {
         return this.authService.login(req);
     }
 

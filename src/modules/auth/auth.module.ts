@@ -10,6 +10,8 @@ import { User } from '../user/entity/user.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 
 import { UserRepository } from '../user/repository/user.repository';
+import {LocalAuthGuard} from "./guards/local-auth.guard";
+import {LocalStrategy} from "./strategy/local.strategy";
 
 @Module({
     imports: [
@@ -21,7 +23,7 @@ import { UserRepository } from '../user/repository/user.repository';
             signOptions: { expiresIn: jwtConstants.accessTokenExpiry },
         }),
     ],
-    providers: [AuthService, JwtStrategy, UserRepository],
+    providers: [AuthService, JwtStrategy, UserRepository,LocalStrategy],
     exports: [AuthService],
     controllers: [AuthController],
 })
