@@ -1,4 +1,4 @@
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Expose } from 'class-transformer';
 import { Gig } from '../../gig/entity/gig.entity';
 import { ExtraType } from '../../extraType/entity/extraType.entity';
@@ -19,4 +19,16 @@ export class GigExtra {
     @JoinColumn({ name: 'extra_type_id' })
     @Expose()
     extraType: ExtraType;
+
+    @Column()
+    @Expose()
+    price: number;
+
+    @Column()
+    @Expose()
+    stripe_product_id: string;
+
+    @Column()
+    @Expose()
+    stripe_price_id: string;
 }

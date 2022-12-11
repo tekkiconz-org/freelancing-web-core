@@ -3,9 +3,9 @@ import { Expose } from 'class-transformer';
 import { Gig } from '../../gig/entity/gig.entity';
 
 export enum PlanType {
-    BASIC,
-    STANDARD,
-    PREMIUM,
+    BASIC = 'BASIC',
+    STANDARD = 'STANDARD',
+    PREMIUM = 'PREMIUM',
 }
 
 @Entity({
@@ -29,9 +29,21 @@ export class GigPlan {
 
     @Column()
     @Expose()
-    price: string;
+    descriptions: string;
 
     @Column()
     @Expose()
+    price: number;
+
+    @Column({ default: null })
+    @Expose()
     metadata: string;
+
+    @Column()
+    @Expose()
+    stripe_price_id: string;
+
+    @Column()
+    @Expose()
+    stripe_product_id: string;
 }

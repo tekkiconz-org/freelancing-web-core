@@ -10,44 +10,43 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     email: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     phone: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     username: string;
 
-    @Column()
-    @Expose()
+    @Column({ nullable: true })
     @Exclude()
     password: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     avatar_url: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     country_code: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     verification_status: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     status: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     verification_object: string;
 
-    @Column()
+    @Column({ nullable: true })
     @Expose()
     stripe_account_id: string;
 

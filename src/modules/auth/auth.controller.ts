@@ -1,20 +1,19 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { UsersService } from '../user/users.service';
 import { LoginUserDto } from './dto/loginUser.dto';
 import { Request } from 'express';
 import { JWTAuthGuard } from './guards/jwt-auth.guard';
 import { SignUpDto } from './dto/signUp.dto';
 import { GetAccessTokenForm } from './dto/getAccessToken.dto';
 import { ResponseAuthDto } from './dto/responseAuth.dto';
-import { User } from '../user/entity/user.entity';
-import {LocalAuthGuard} from "./guards/local-auth.guard";
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import Stripe from 'stripe';
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService, private readonly userService: UsersService) {}
+    constructor(private readonly authService: AuthService) {}
 
     @Post('/login')
     @ApiBody({
@@ -41,5 +40,11 @@ export class AuthController {
         } catch (e) {
             throw new Error(e);
         }
+    }
+
+    @Get('verify-payment-account')
+    @UseGuards(JWTAuthGuard)
+    async verifyPaymentAccount(@Req() req: Request): Promise<Stripe.Response<Stripe.AccountLink>> {
+        return this.authService.verifyPaymentAccount(req);
     }
 }

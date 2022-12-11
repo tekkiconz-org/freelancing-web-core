@@ -3,8 +3,8 @@ import { Expose } from 'class-transformer';
 import { Category } from '../../category/entity/category.entity';
 
 export enum Type {
-    LESS_TIME,
-    OTHER,
+    LESS_TIME = 'LESS_TIME',
+    OTHER = 'OTHER',
 }
 
 @Entity({

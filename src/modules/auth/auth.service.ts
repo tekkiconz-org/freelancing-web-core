@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '../user/entity/user.entity';
 import { UsersService } from '../user/users.service';
 import * as bcrypt from 'bcrypt';
@@ -7,6 +7,8 @@ import { SignUpDto } from './dto/signUp.dto';
 import { ResponseAuthDto } from './dto/responseAuth.dto';
 import { JwtService } from '@nestjs/jwt';
 import { UserRepository } from '../user/repository/user.repository';
+import StripeService from '../stripe/stripe.service';
+import Stripe from 'stripe';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +20,7 @@ export class AuthService {
         private usersService: UsersService,
         private userRepository: UserRepository,
         private jwtService: JwtService,
+        private stripeService: StripeService,
     ) {}
 
     async validateUser(email: string, password: string): Promise<Partial<User>> {
@@ -26,16 +29,13 @@ export class AuthService {
         if (!comparePassword) {
             throw new BadRequestException({ message: 'UnAuthorized' });
         }
-        return {
-            id: user.id,
-            email: user.email,
-        };
+        return user;
     }
 
     async login(req: Request): Promise<ResponseAuthDto> {
         // console.log(req.body);
-        const user : Partial<User> = req.user;
-        const payload = { email: user.email,  id: user.id };
+        const user: Partial<User> = req.user;
+        const payload = { ...user };
         return {
             access_token: this.jwtService.sign(payload),
             refresh_token: this.jwtService.sign(payload, this.refreshTokenConfig),
@@ -50,9 +50,14 @@ export class AuthService {
             throw new BadRequestException('User is existed');
         }
         const user = new User();
+
+        const stripeAccount = await this.stripeService.createAccount(email);
+
         user.email = email;
         user.password = password;
         user.username = username;
+        user.stripe_account_id = stripeAccount.id;
+
         await this.userRepository.save(user);
     }
 
@@ -66,5 +71,12 @@ export class AuthService {
         return {
             access_token: this.jwtService.sign(refreshTokenDecode),
         };
+    }
+
+    async verifyPaymentAccount(req: Request): Promise<Stripe.Response<Stripe.AccountLink>> {
+        const user: Partial<User> = req.user;
+        // const accountLink = await this.stripeService.linkAccount(req.user?.stripe_account_id);
+        // console.log(accountLink);
+        return this.stripeService.linkAccount(user.stripe_account_id);
     }
 }

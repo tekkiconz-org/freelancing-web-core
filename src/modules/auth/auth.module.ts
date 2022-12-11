@@ -10,11 +10,12 @@ import { User } from '../user/entity/user.entity';
 import { JwtStrategy } from './strategy/jwt.strategy';
 
 import { UserRepository } from '../user/repository/user.repository';
-import {LocalAuthGuard} from "./guards/local-auth.guard";
-import {LocalStrategy} from "./strategy/local.strategy";
+import { LocalStrategy } from './strategy/local.strategy';
+import StripeModule from '../stripe/stripe.module';
 
 @Module({
     imports: [
+        StripeModule,
         UsersModule,
         PassportModule,
         TypeOrmModule.forFeature([User]),
@@ -23,7 +24,7 @@ import {LocalStrategy} from "./strategy/local.strategy";
             signOptions: { expiresIn: jwtConstants.accessTokenExpiry },
         }),
     ],
-    providers: [AuthService, JwtStrategy, UserRepository,LocalStrategy],
+    providers: [AuthService, JwtStrategy, UserRepository, LocalStrategy],
     exports: [AuthService],
     controllers: [AuthController],
 })

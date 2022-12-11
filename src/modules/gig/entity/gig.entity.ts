@@ -1,8 +1,15 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../user/entity/user.entity';
 import { Category } from '../../category/entity/category.entity';
 import { IsNumber } from 'class-validator';
+
+export enum GigStatusEnum {
+    DESCRIPTION_CREATED,
+    PLAN_CREATED,
+    ACTIVE,
+    DISABLED,
+}
 
 @Entity({
     name: 'gig',
@@ -16,34 +23,53 @@ export class Gig {
     @Expose()
     user: User;
 
-    @Column()
-    @Expose()
-    is_active: boolean;
+    @Column({
+        type: 'enum',
+        enum: GigStatusEnum,
+    })
+    @Exclude()
+    status: GigStatusEnum;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     @Expose()
     title: string;
+
+    @Column({
+        nullable: true,
+    })
+    @Expose()
+    description: string;
 
     @ManyToOne(() => Category)
     @JoinColumn({ name: 'category_id' })
     @Expose()
     category: Category;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     @Expose()
     thumbnail: string;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     @Expose()
     @IsNumber()
     min_price: number;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     @Expose()
     @IsNumber()
     avg_rating: number;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     @Expose()
     metadata: string;
 }
